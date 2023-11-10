@@ -4,7 +4,7 @@ public extension Optional {
     var isNotNil: Bool { self != nil }
 
     var isInitialized: Bool {
-        if case .none = self { return true }
-        else { return false }
+        if case .none = self { return false }
+        else { return true }
     }
 }
