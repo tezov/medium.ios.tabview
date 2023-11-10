@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct ContentView: View {
+struct MainActivity: View {
     @State var selected:Int = 0
     
     var body: some View {
@@ -49,5 +49,5 @@ struct withBottomNavigationBar<Content: View>: View {
 }
 
 #Preview {
-    ContentView()
+    MainActivity()
 }

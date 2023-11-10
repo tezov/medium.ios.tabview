@@ -4,7 +4,7 @@ import SwiftUI
 struct tabviewApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            MainActivity()
         }
     }
 }
