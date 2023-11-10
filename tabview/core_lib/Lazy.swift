@@ -27,5 +27,4 @@ import SwiftUI
         self.initializer = value
     }
 
-    public var isInitialized: Bool { initializer.isInitialized }
 }
