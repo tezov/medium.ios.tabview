@@ -2,10 +2,12 @@ import SwiftUI
 import UIKit
 
 public struct BottomNavigation: View {
+    @Remember private var tabControllerState = TabBarController()
+    
     let items: [BottomNavigationItem]
     @Binding var selected: Int
     let onClick: (String) -> Void
-
+    
     public init(items: [BottomNavigationItem], selected: Binding<Int>, onClick: @escaping (String) -> Void) {
         self.items = items
         self._selected = selected
@@ -13,14 +15,12 @@ public struct BottomNavigation: View {
     }
 
     public var body: some View {
-        let view = BottomNavigationInternal(
+        BottomNavigationInternal(
             items: items,
             selected: _selected,
-            onClick: onClick
-        )
-        view
-            .layoutPriority(1)
-            .frame(height: view.getTabHeight())
+            onClick: onClick,
+            tabControllerState: tabControllerState
+        ).frame(height: tabControllerState.getTabHeight())
     }
 }
 
@@ -28,13 +28,18 @@ public struct BottomNavigationInternal: UIViewRepresentable {
     let items: [BottomNavigationItem]
     @Binding var selected: Int
     let onClick: (String) -> Void
-
-    @Remember private var tabControllerState = TabBarController()
-
-    init(items: [BottomNavigationItem], selected: Binding<Int>, onClick: @escaping (String) -> Void) {
+    private var tabControllerState: TabBarController
+    
+    fileprivate init(
+        items: [BottomNavigationItem],
+        selected: Binding<Int>,
+        onClick: @escaping (String) -> Void,
+        tabControllerState: TabBarController
+    ) {
         self.items = items
         self._selected = selected
         self.onClick = onClick
+        self.tabControllerState = tabControllerState
     }
 
     func getTabHeight() -> CGFloat { tabControllerState.getTabHeight() }
@@ -89,5 +94,5 @@ private class TabBarController: UITabBarController, UITabBarControllerDelegate {
         return false
     }
 
-    func getTabHeight() -> CGFloat { tabBar.frame.height }
+    public func getTabHeight() -> CGFloat { tabBar.frame.height }
 }
