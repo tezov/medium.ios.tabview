@@ -30,12 +30,12 @@ struct withBottomNavigationBar<Content: View>: View {
     let items:[BottomNavigationItem]
     @Binding var selected:Int
     let onClick: (String) -> Void
-    var content: ()-> Content
+    @ViewBuilder var content: Content
     
     var body: some View {
         GeometryReader { geometry in
             VStack(spacing: 0) {
-                content()
+                content
                     .frame(maxWidth: .infinity, maxHeight:.infinity)
                 BottomNavigation(
                     items : items,
