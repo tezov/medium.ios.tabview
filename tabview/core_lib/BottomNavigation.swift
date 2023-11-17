@@ -2,8 +2,7 @@ import SwiftUI
 import UIKit
 
 public struct BottomNavigation: View {
-    @Remember private var tabControllerState = TabBarController()
-    
+    @Remember private var tabController = TabBarController()
     let items: [BottomNavigationItem]
     @Binding var selected: Int
     let onClick: (String) -> Void
@@ -19,8 +18,8 @@ public struct BottomNavigation: View {
             items: items,
             selected: _selected,
             onClick: onClick,
-            tabControllerState: tabControllerState
-        ).frame(height: tabControllerState.getTabHeight())
+            tabController: tabController
+        ).frame(height: tabController.getTabHeight())
     }
 }
 
@@ -28,24 +27,24 @@ public struct BottomNavigationInternal: UIViewRepresentable {
     let items: [BottomNavigationItem]
     @Binding var selected: Int
     let onClick: (String) -> Void
-    private var tabControllerState: TabBarController
+    fileprivate weak var tabController: TabBarController?
     
     fileprivate init(
         items: [BottomNavigationItem],
         selected: Binding<Int>,
         onClick: @escaping (String) -> Void,
-        tabControllerState: TabBarController
+        tabController: TabBarController
     ) {
         self.items = items
         self._selected = selected
         self.onClick = onClick
-        self.tabControllerState = tabControllerState
+        self.tabController = tabController
     }
 
-    func getTabHeight() -> CGFloat { tabControllerState.getTabHeight() }
+    func getTabHeight() -> CGFloat { tabController!.getTabHeight() }
 
     public func makeUIView(context _: Context) -> UIView {
-        let tabController = tabControllerState
+        let tabController = tabController!
         tabController.tabBar.backgroundColor = .systemBackground
         tabController.setViewControllers(items.map { _ in UIViewController() }, animated: false)
         for i in 0 ..< items.count {
@@ -60,18 +59,18 @@ public struct BottomNavigationInternal: UIViewRepresentable {
 
     public func updateUIView(_: UIView, context _: Context) {
         updateIcon()
-        tabControllerState.selectedIndex = selected
+        tabController!.selectedIndex = selected
     }
 
     private func updateIcon() {
-        let selectedPrevious = tabControllerState.selectedIndex
+        let selectedPrevious = tabController!.selectedIndex
         if selectedPrevious != selected {
             let itemData = items[selectedPrevious]
-            let tabBar = tabControllerState.tabBar.items![selectedPrevious]
+            let tabBar = tabController!.tabBar.items![selectedPrevious]
             tabBar.image = UIImage(systemName: itemData.iconInactive)
         }
         let itemData = items[selected]
-        let tabBar = tabControllerState.tabBar.items![selected]
+        let tabBar = tabController!.tabBar.items![selected]
         tabBar.image = UIImage(systemName: itemData.iconActive)
     }
 }
